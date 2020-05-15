@@ -19,7 +19,7 @@ app.set('port', process.env.PORT || 3000)
 
 app.enable('trust proxy')
 
-const limit = 15; // 15 minutes
+const limit = 2; // 2 minutes
 // the weather doesn't change too often
 const limiter = new RateLimit({
   windowMs: limit * 60 * 1000, // 15 miinutes
