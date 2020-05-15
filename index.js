@@ -19,13 +19,13 @@ app.set('port', process.env.PORT || 3000)
 
 app.enable('trust proxy')
 
-// the weather doesn't change too often
+const limitMinutes = 10;
 const limiter = new RateLimit({
-  windowMs: 30 * 1000, // 30 seconds
+  windowMs: limitMinutes * 60 * 1000,
   max: 1, // limit each IP to 1 requests per windowMs
   onLimitReached: function(req, res) {
     const d = new Date()
-    const tryAfterDate = new Date(d.setMinutes(d.getMinutes() + limit))
+    const tryAfterDate = new Date(d.setMinutes(d.getMinutes() + limitMinutes))
     return res.status(429).json({
       message: "Weather doesn't change so fast, please try again after <span style='font-weight: 700; color: #f8bb86; font-style: italic;'>" + tryAfterDate.toLocaleTimeString() + "</span>.",
       isLimitJustReached: true,
@@ -42,7 +42,7 @@ app.get('/', (req, res) => {
 const darksky = new DarkSky(process.env.API_KEY)
 
 app.use('/api/weather', 
-        limiter, 
+        // limiter, 
         async (req, res, next) => {
   try {
     const { latitude, longitude, units } = req.query
