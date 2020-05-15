@@ -19,10 +19,9 @@ app.set('port', process.env.PORT || 3000)
 
 app.enable('trust proxy')
 
-const limit = 1; // 1 minute
 // the weather doesn't change too often
 const limiter = new RateLimit({
-  windowMs: limit * 60 * 1000,
+  windowMs: 30 * 1000, // 30 seconds
   max: 1, // limit each IP to 1 requests per windowMs
   onLimitReached: function(req, res) {
     const d = new Date()
