@@ -19,10 +19,10 @@ app.set('port', process.env.PORT || 3000)
 
 app.enable('trust proxy')
 
-const limit = 2; // 2 minutes
+const limit = 1; // 1 minute
 // the weather doesn't change too often
 const limiter = new RateLimit({
-  windowMs: limit * 60 * 1000, // 15 miinutes
+  windowMs: limit * 60 * 1000,
   max: 1, // limit each IP to 1 requests per windowMs
   onLimitReached: function(req, res) {
     const d = new Date()
@@ -43,7 +43,7 @@ app.get('/', (req, res) => {
 const darksky = new DarkSky(process.env.API_KEY)
 
 app.use('/api/weather', 
-        //limiter, 
+        limiter, 
         async (req, res, next) => {
   try {
     const { latitude, longitude, units } = req.query
@@ -53,7 +53,6 @@ app.use('/api/weather',
         longitude,
         units,
         language: 'en',
-        exclude: ['minutely','hourly','daily','alerts','flags'],
       })
       .get()
 
